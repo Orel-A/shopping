@@ -1,2 +1,2 @@
 # Online Shopping
-Angular Express.js MySQL Bootstrap Font-Awesome
+Angular Express.js MySQL Bootstrap Font-Awesome Bcrypt
