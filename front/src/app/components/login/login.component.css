@@ -1,0 +1,8 @@
+.credentials-error {
+	padding: .25rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    color: #fff;
+    background-color: rgb(220,53,69);
+    border-radius: .25rem;
+}

@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-3 rounded">
+  <span class="navbar-brand">Shopping Site</span>
+
+  <button class="navbar-toggler" (click)="isCollapsed = !isCollapsed"><span class="navbar-toggler-icon"></span></button>
+
+  <div class="collapse navbar-collapse" [collapse]="isCollapsed">
+    <ng-template [ngIf]="!api.user">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
+        <a class="nav-link" routerLink="/register" routerLinkActive="active">Register</a>
+      </div>
+      <span class="navbar-text">Hi Guest</span>
+    </ng-template>
+
+    <ng-template [ngIf]="api.user">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-link" routerLink="/login" routerLinkActive="active">Home</a>
+        <a class="nav-link" routerLink="/admin-cp" routerLinkActive="active" *ngIf="api.user.is_admin">Control Panel</a>
+        <a class="nav-link" routerLink="/shop" routerLinkActive="active" *ngIf="!api.user.is_admin"
+          ><span class="badge badge-pill badge-info" *ngIf="api.cart && !api.cart.closed">{{
+            api.cart.items.length
+          }}</span>
+          Shop</a
+        >
+        <a class="nav-link" href="#" (click)="logOut($event)">Logout</a>
+      </div>
+      <span class="navbar-text">Hi {{ api.user.first_name }} {{ api.user.last_name }}</span>
+    </ng-template>
+  </div>
+</nav>

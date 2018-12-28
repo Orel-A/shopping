@@ -1,0 +1,88 @@
+<div class="bg-light shadow-sm rounded mb-3 p-2">
+  <button type="button" class="btn btn-info float-right" *ngIf="hideCart" (click)="hideCart = false">
+    <span class="badge badge-pill badge-secondary" *ngIf="api.cart && !api.cart.closed">{{ api.cart.items.length }}</span> Show Cart
+  </button>
+  <input type="text" class="form-control w-auto" placeholder="Search..." id="search-box" />
+</div>
+<div class="row">
+  <div class="col-lg-4" *ngIf="!hideCart">
+    <aside class="shadow-sm rounded p-2 mb-2">
+      <button type="button" class="close float-right" aria-label="Close" (click)="hideCart = true">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4>Cart</h4>
+
+      <ng-container *ngIf="api.cart && !api.cart.closed; else emptyCart">
+        <table class="table table-borderless table-sm text-center">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Cost</th>
+              <th scope="col">#</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of api.cart.items">
+              <td>{{ item.product_name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.total_cost | currency: "ILS" }}</td>
+              <td>
+                <i class="fas fa-trash text-danger" style="cursor:pointer" (click)="api.deleteCartItem(item)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="color:#6c757d;line-height:2;">
+          <button type="button" class="btn btn-success btn-sm float-right" routerLink="/order">Order</button>
+          <button type="button" class="btn btn-danger btn-sm float-right mr-1" (click)="api.deleteCart()">
+            Cancel
+          </button>
+          Total cost: {{ api.cart.final_cost | currency: "ILS" }}
+        </div>
+      </ng-container>
+      <ng-template #emptyCart><span style="color:#6c757d;">Your cart is empty</span></ng-template>
+    </aside>
+  </div>
+  <div [ngClass]="{ 'col-lg-8': !hideCart, 'col-lg-12': hideCart }">
+    <div class="bg-light shadow-sm rounded mb-3 p-2 text-center">
+      <a
+        href="#"
+        class="badge mx-1"
+        [ngClass]="{
+          'badge-primary': cat === currentCategory,
+          'badge-secondary': cat !== currentCategory
+        }"
+        (click)="onSwitchCategory($event, cat)"
+        *ngFor="let cat of api.categories"
+        >{{ cat.category_name }}</a
+      >
+    </div>
+    <div class="shadow-sm rounded p-2">
+      <div class="row">
+        <div
+          class="col-md-2 text-center"
+          *ngFor="let product of products"
+          [popover]="quantityTemplate"
+          popoverTitle="Choose Quantity"
+          [outsideClick]="true"
+          container="body"
+          #popup="bs-popover"
+          (onShown)="onShowPopup(popup, product)"
+        >
+          <p><img [src]="product.image_url" [alt]="product.product_name" class="img-fluid" /></p>
+          <p>{{ product.price | currency: "ILS" }}</p>
+          <p>{{ product.product_name }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #quantityTemplate>
+  <div class="form-row">
+    <input type="number" class="form-control form-control-sm mr-1" style="width:100px;" min="1" value="1" #quantity />
+    <button type="button" class="btn btn-primary btn-sm" (click)="onAddProduct(quantity.value)">Add</button>
+  </div>
+</ng-template>

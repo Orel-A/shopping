@@ -1,0 +1,74 @@
+<div class="row">
+  <div class="col-lg-4">
+    <div class="bg-light shadow-sm rounded p-2">
+      <ng-template [ngIf]="!api.user">
+        <h2>Login</h2>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="credentials-error" *ngIf="loginForm.hasError('badCredentials')">
+            Email or password are incorrect!
+          </div>
+          <div class="form-group">
+            <label>Email:</label>
+            <input
+              type="email"
+              class="form-control"
+              formControlName="email"
+              [ngClass]="{
+                'is-invalid': loginForm.controls['email'].invalid,
+                'is-valid': loginForm.controls['email'].valid
+              }"
+            />
+            <div class="invalid-feedback">Email is required</div>
+          </div>
+
+          <div class="form-group">
+            <label>Password:</label>
+            <input
+              type="password"
+              class="form-control"
+              formControlName="password"
+              [ngClass]="{
+                'is-invalid': loginForm.controls['password'].invalid,
+                'is-valid': loginForm.controls['password'].valid
+              }"
+            />
+            <div class="invalid-feedback">Password is required</div>
+          </div>
+
+          <button class="btn btn-success w-100" [disabled]="loginForm.invalid">Login</button>
+        </form>
+      </ng-template>
+      <ng-template [ngIf]="api.user">
+        <h2>Logged</h2>
+        <p>Welcome {{ api.user.first_name }} {{ api.user.last_name }}, now you can start shopping!</p>
+        <p *ngIf="!api.cart"><a routerLink="/shop">Create your first cart today.</a></p>
+        <p *ngIf="api.cart && !api.cart.closed">
+          You have an open cart from {{ api.cart.created_date | date: "short" }},
+          <a routerLink="/shop">resume shopping</a>?
+        </p>
+        <p *ngIf="api.cart && api.cart.closed">
+          Your last purchase was on {{ api.cart.created_date | date: "short" }},
+          <a routerLink="/shop">open a new cart</a>?
+        </p>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="bg-light shadow-sm rounded p-2">
+      <h2>About Our Store</h2>
+      <p class="text-justify lead">
+        Here is why you should buy in our store; we are a global company which is committed to our customers, we ship
+        only with well known companies
+      </p>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="bg-light shadow-sm rounded p-2">
+      <h2>Statistics</h2>
+      <p>Available products in our store: {{ api.stats.totalProducts }}</p>
+      <p>Number of orders submitted in our store: {{ api.stats.totalOrders }}</p>
+    </div>
+  </div>
+</div>

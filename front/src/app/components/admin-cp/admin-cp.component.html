@@ -1,0 +1,81 @@
+<div class="row">
+  <div class="col-lg-4">
+    <div class="shadow-sm rounded p-2">
+      <button type="button" class="btn btn-success btn-sm float-right" (click)="onNewProduct()">+</button>
+      <h4>Product</h4>
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label>Name:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="product_name"
+            [ngClass]="{
+              'is-invalid': productForm.controls['product_name'].invalid,
+              'is-valid': productForm.controls['product_name'].valid
+            }"
+          />
+          <div class="invalid-feedback">Name is required</div>
+        </div>
+
+        <div class="form-group">
+          <label>Price:</label>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            class="form-control"
+            formControlName="price"
+            [ngClass]="{
+              'is-invalid': productForm.controls['price'].invalid,
+              'is-valid': productForm.controls['price'].valid
+            }"
+          />
+          <div class="invalid-feedback">Price is required</div>
+        </div>
+
+        <div class="form-group">
+          <label>Picture:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="image_url"
+            [ngClass]="{
+              'is-invalid': productForm.controls['image_url'].invalid,
+              'is-valid': productForm.controls['image_url'].valid
+            }"
+          />
+          <div class="invalid-feedback">Picture is required</div>
+        </div>
+
+        <button class="btn btn-success w-100" [disabled]="productForm.invalid">{{currentProduct ? 'Edit' : 'Create'}}</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-8">
+    <div class="bg-light shadow-sm rounded mb-3 p-2 text-center">
+      <a
+        href="#"
+        class="badge mx-1"
+        *ngFor="let cat of api.categories"
+        [ngClass]="{
+          'badge-primary': cat === currentCategory,
+          'badge-secondary': cat !== currentCategory
+        }"
+        (click)="onSwitchCategory($event, cat)"
+        >{{ cat.category_name }}</a
+      >
+    </div>
+    <div class="shadow-sm rounded p-2">
+      <div class="row">
+        <div class="col-md-2 text-center" *ngFor="let product of products" (click)="onSelectProduct(product)">
+          <div [ngClass]="{ 'border rounded': currentProduct === product }">
+            <p><img [src]="product.image_url" [alt]="product.product_name" class="img-fluid" /></p>
+            <p>{{ product.price | currency: "ILS" }}</p>
+            <p>{{ product.product_name }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

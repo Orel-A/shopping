@@ -1,0 +1,149 @@
+<h2>Registeration</h2>
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col-lg-6 mx-auto" *ngIf="!resumeToStepTwo">
+      <div class="bg-light shadow-sm rounded p-2" formGroupName="stepOne">
+        <h3>Step 1</h3>
+        <div class="form-group">
+          <label>ID:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="id"
+            [ngClass]="{
+              'is-invalid': registerForm.get('stepOne.id').invalid,
+              'is-valid': registerForm.get('stepOne.id').valid
+            }"
+          />
+          <div class="invalid-feedback">
+            <ng-container *ngIf="registerForm.get('stepOne.id').hasError('duplicate'); else idRequired">
+              This ID is already taken, choose another
+            </ng-container>
+            <ng-template #idRequired>ID is required, numbers only</ng-template>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email:</label>
+          <input
+            type="email"
+            class="form-control"
+            formControlName="email"
+            [ngClass]="{
+              'is-invalid': registerForm.get('stepOne.email').invalid,
+              'is-valid': registerForm.get('stepOne.email').valid
+            }"
+          />
+          <div class="invalid-feedback" *ngIf="registerForm.get('stepOne.email').invalid">
+            <ng-container *ngIf="registerForm.get('stepOne.email').hasError('duplicate'); else emailRequired">
+              Email is already taken, choose another
+            </ng-container>
+            <ng-template #emailRequired>Email is required</ng-template>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            class="form-control"
+            formControlName="password"
+            [ngClass]="{
+              'is-invalid': registerForm.get('stepOne.password').invalid,
+              'is-valid': registerForm.get('stepOne.password').valid
+            }"
+          />
+          <div class="invalid-feedback">Password is required, minimum 6 characters</div>
+        </div>
+
+        <div class="form-group">
+          <label>Confirm Password:</label>
+          <input
+            type="password"
+            class="form-control"
+            formControlName="confirmPassword"
+            [ngClass]="{
+              'is-invalid': registerForm.get('stepOne').hasError('mismatch'),
+              'is-valid': !registerForm.get('stepOne').hasError('mismatch')
+            }"
+          />
+          <div class="invalid-feedback">Repeat the password you entered above</div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-primary w-100"
+          [disabled]="registerForm.get('stepOne').invalid"
+          (click)="checkStepOne()"
+        >
+          Proceed
+        </button>
+      </div>
+    </div>
+    <div class="col-lg-6 mx-auto" *ngIf="resumeToStepTwo">
+      <div class="bg-light shadow-sm rounded p-2" formGroupName="stepTwo">
+        <h3>Step 2</h3>
+
+        <div class="form-group">
+          <label>First Name:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="first_name"
+            [ngClass]="{
+              'is-invalid': registerForm.get('stepTwo.first_name').invalid,
+              'is-valid': registerForm.get('stepTwo.first_name').valid
+            }"
+          />
+          <div class="invalid-feedback">First name is required</div>
+        </div>
+
+        <div class="form-group">
+          <label>Last Name:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="last_name"
+            [ngClass]="{
+              'is-invalid': registerForm.get('stepTwo.last_name').invalid,
+              'is-valid': registerForm.get('stepTwo.last_name').valid
+            }"
+          />
+          <div class="invalid-feedback">Last name is required</div>
+        </div>
+
+        <div class="form-group">
+          <label>City:</label>
+          <select
+            class="form-control"
+            formControlName="city"
+            [ngClass]="{
+              'is-invalid': registerForm.get('stepTwo.city').invalid,
+              'is-valid': registerForm.get('stepTwo.city').valid
+            }"
+          >
+            <option value="" disabled>Select City</option>
+            <option *ngFor="let city of api.cities">{{ city }}</option>
+          </select>
+          <div class="invalid-feedback">City is required</div>
+        </div>
+
+        <div class="form-group">
+          <label>Street:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="street"
+            [ngClass]="{
+              'is-invalid': registerForm.get('stepTwo.street').invalid,
+              'is-valid': registerForm.get('stepTwo.street').valid
+            }"
+          />
+          <div class="invalid-feedback">Street is required</div>
+        </div>
+
+        <button class="btn btn-success w-100" [disabled]="registerForm.invalid">Register</button>
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,110 @@
+<div class="row" *ngIf="!purchaseComplete">
+  <div class="col-lg-6">
+    <div class="bg-light shadow-sm rounded p-2">
+      <input
+        type="text"
+        class="form-control float-right w-auto"
+        placeholder="Search within cart..."
+        (input)="searchVal = $event.target.value"
+      />
+      <h3>Cart</h3>
+
+      <p class="clearfix" *ngFor="let item of api.cart.items">
+        <img [src]="item.image_url" [alt]="item.product_name" class="img-thumbnail float-left mr-2" style="width:20%" />
+        <strong>Name: </strong>
+        <span [ngClass]="{ mark: searchVal && item.product_name.includes(searchVal) }">{{ item.product_name }}</span
+        ><br />
+        <strong>Quantity:</strong> {{ item.quantity }}<br />
+        <strong>Cost:</strong> {{ item.total_cost | currency: "ILS" }}
+      </p>
+
+      <div style="color:#6c757d;line-height:2;">Total cost: {{ api.cart.final_cost | currency: "ILS" }}</div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="bg-light shadow-sm rounded p-2">
+      <h3>Order</h3>
+      <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+        <h5>Shipping Details</h5>
+        <div class="form-group">
+          <label>City:</label>
+          <select
+            class="form-control"
+            formControlName="city"
+            [ngClass]="{
+              'is-invalid': orderForm.controls['city'].invalid,
+              'is-valid': orderForm.controls['city'].valid
+            }"
+          >
+            <option value="" disabled>Select City</option>
+            <option *ngFor="let city of api.cities" [value]="city">{{ city }}</option>
+          </select>
+          <div class="invalid-feedback">City is required</div>
+        </div>
+
+        <div class="form-group">
+          <label>Street:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="street"
+            [ngClass]="{
+              'is-invalid': orderForm.controls['street'].invalid,
+              'is-valid': orderForm.controls['street'].valid
+            }"
+          />
+          <div class="invalid-feedback">Street is required</div>
+        </div>
+
+        <div class="form-group">
+          <label>Delivery Date:</label>
+          <input
+            type="date"
+            [min]="today"
+            class="form-control"
+            formControlName="delivery_date"
+            [ngClass]="{
+              'is-invalid': orderForm.controls['delivery_date'].invalid,
+              'is-valid': orderForm.controls['delivery_date'].valid
+            }"
+          />
+          <div class="invalid-feedback">
+            <ng-container *ngIf="orderForm.controls['delivery_date'].hasError('busyDate'); else dateRequired">
+              This is a busy date, please choose a different date
+            </ng-container>
+            <ng-template #dateRequired>Delivery date is required</ng-template>
+          </div>
+        </div>
+
+        <h5>Payment</h5>
+
+        <div class="form-group">
+          <label>Credit Card:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="creditCard"
+            [ngClass]="{
+              'is-invalid': orderForm.controls['creditCard'].invalid,
+              'is-valid': orderForm.controls['creditCard'].valid
+            }"
+          />
+          <div class="invalid-feedback">Credit card is required</div>
+        </div>
+
+        <button class="btn btn-success w-100" [disabled]="orderForm.invalid">Purchase</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="purchaseComplete">
+  <div class="col-lg-6 mx-auto">
+    <div class="bg-light shadow-sm rounded p-2">
+      <h3>Order completed successfully</h3>
+      <p class="lead">Thank you for your purchase!</p>
+      <p>For a copy of the receipt press <a [href]="genLinkURI()" download="receipt.txt">Here</a> to download</p>
+      <button type="button" class="btn btn-primary" routerLink="/login">OK</button>
+    </div>
+  </div>
+</div>
